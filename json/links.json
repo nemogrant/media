@@ -1,0 +1,39 @@
+[
+    {
+        "name": "",
+        "color": "#cd486b",
+        "icon": "instagram",
+        "url": "https://www.instagram.com/gilalexandel/"
+	},
+    {
+        "name": "",
+        "color": "#55acee",
+        "icon": "twitter",
+        "url": "https://twitter.com/gilalexandel"
+	},
+    {
+        "name": "",
+        "color": "#007bb5",
+        "icon": "linkedin",
+        "url": "http://linkedin.com/in/gilalexandel"
+	},
+    
+    {
+        "name": "",
+        "color": "#1769ff",
+        "icon": "behance",
+        "url": "https://www.behance.net/gilalexandel"
+	},
+    {
+        "name": "",
+        "color": "black",
+        "icon": "github-circle",
+        "url": "https://github.com/gilalexandel"
+	},
+    {
+        "name": "",
+        "color": "#21204E",
+        "icon": "file-account",
+        "url": "gilalexandel-resume.pdf"
+	}
+]
