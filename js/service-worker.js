@@ -4,7 +4,7 @@ var cacheVersion = 1;
 var currentCache = {
   offline: 'offline-cache' + cacheVersion
 };
-const offlineUrl = 'https://raw.githubusercontent.com/nemogrant/media/master/documents/offline-page.html';
+const offlineUrl = 'http://nemogrant.com/documents/offline-page.html';
 
 this.addEventListener('install', event => {
   event.waitUntil(
