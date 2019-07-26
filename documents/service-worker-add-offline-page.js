@@ -4,13 +4,13 @@ var cacheVersion = 1;
 var currentCache = {
   offline: 'offline-cache' + cacheVersion
 };
-const offlineUrl = 'offline-page.html';
+const offlineUrl = 'https://raw.githubusercontent.com/nemogrant/media/master/documents/offline-page.html';
 
 this.addEventListener('install', event => {
   event.waitUntil(
     caches.open(currentCache.offline).then(function(cache) {
       return cache.addAll([
-          './img/offline.svg',
+          'https://raw.githubusercontent.com/nemogrant/media/master/images/offline.svg',
           offlineUrl
       ]);
     })
