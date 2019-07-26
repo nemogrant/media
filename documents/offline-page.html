@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html class="gr__deanhume_com"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+	<title>Create a really, really simple offline page using Service Workers</title>
+
+	<meta name="HandheldFriendly" content="True">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="offline-page_files/A.css">
+	<link href="offline-page_files/css.css" rel="stylesheet">
+	<!-- Adress bar styling -->
+	<meta name="theme-color" content="#000">
+	<meta name="msapplication-navbutton-color" content="#000">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<link rel="shortcut icon" href="https://deanhume.com/xfavicon.png.pagespeed.ic.B-GMW0FNf6.png" type="image/png">
+    <link rel="canonical" href="https://deanhume.com/create-a-really-really-simple-offline-page-using-service-workers/">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+    <meta property="og:site_name" content="Dean Hume's Blog">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Create a really, really simple offline page using Service Workers">
+    <meta property="og:description" content="Let's imagine for a second that you are on a train. The train is cruising through the countryside and you are reading an awesome article on the web using your mobile device. At the same moment that you click on a link to view more details, the train suddenly disappears">
+    <meta property="og:url" content="http://deanhume.com/create-a-really-really-simple-offline-page-using-service-workers/">
+    <meta property="article:published_time" content="2016-01-25T16:23:00.000Z">
+    <meta property="article:modified_time" content="2018-02-09T16:23:21.000Z">
+    <meta property="article:tag" content="Service Workers">
+    
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Create a really, really simple offline page using Service Workers">
+    <meta name="twitter:description" content="Let's imagine for a second that you are on a train. The train is cruising through the countryside and you are reading an awesome article on the web using your mobile device. At the same moment that you click on a link to view more details, the train suddenly disappears">
+    <meta name="twitter:url" content="http://deanhume.com/create-a-really-really-simple-offline-page-using-service-workers/">
+    <meta name="twitter:label1" content="Written by">
+    <meta name="twitter:data1" content="Dean Hume">
+    <meta name="twitter:label2" content="Filed under">
+    <meta name="twitter:data2" content="Service Workers">
+    <meta name="twitter:site" content="@DeanoHume">
+    
+    <script type="text/javascript" async="" src="offline-page_files/analytics.js"></script><script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Dean Hume&#x27;s Blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "http://deanhume.com/favicon.png",
+            "width": 60,
+            "height": 60
+        }
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Dean Hume",
+        "url": "https://deanhume.com/author/dean/",
+        "sameAs": []
+    },
+    "headline": "Create a really, really simple offline page using Service Workers",
+    "url": "https://deanhume.com/create-a-really-really-simple-offline-page-using-service-workers/",
+    "datePublished": "2016-01-25T16:23:00.000Z",
+    "dateModified": "2018-02-09T16:23:21.000Z",
+    "keywords": "Service Workers",
+    "description": "Let&#x27;s imagine for a second that you are on a train. The train is cruising through the countryside and you are reading an awesome article on the web using your mobile device. At the same moment that you click on a link to view more details, the train suddenly disappears",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "http://deanhume.com/"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 2.1">
+    <link rel="alternate" type="application/rss+xml" title="Dean Hume's Blog" href="https://deanhume.com/rss/">
+    <link rel="manifest" href="https://deanhume.com/manifest.json">
+<script async="" src="offline-page_files/js"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','UA-11951201-1');</script>
+<style id="fit-vids-style">.fluid-width-video-wrapper{width:100%;position:relative;padding:0;}.fluid-width-video-wrapper iframe,.fluid-width-video-wrapper object,.fluid-width-video-wrapper embed {position:absolute;top:0;left:0;width:100%;height:100%;}</style></head>
+
+<body class="post-template tag-service-workers" data-gr-c-s-loaded="true">
+
+	<nav id="menu">
+	<a class="close-button">Close</a>
+	<div class="nav-wrapper">
+		<p class="nav-label">Menu</p>
+		<ul>
+			<li class="nav-home" role="presentation"><a href="https://deanhume.com/">Home</a></li>
+			<li class="nav-about" role="presentation"><a href="https://deanhume.com/about/">About</a></li>
+			<li class="nav-progressive-web-apps" role="presentation"><a href="https://deanhume.com/tag/progressive-web-apps/">Progressive Web Apps</a></li>
+			<li class="nav-web-performance" role="presentation"><a href="https://deanhume.com/tag/web-performance/">Web Performance</a></li>
+			<li class="nav-rss"><a href="https://feeds.feedburner.com/DeanHumesBlog"><i class="ic ic-rss"></i> Subscribe</a></li>
+		</ul>
+	</div>
+</nav>
+
+	<section id="wrapper">
+		<a class="hidden-close"></a>
+		
+
+<div class="progress-container">
+	<span class="progress-bar" style="width: 0%;"></span>
+</div>
+
+<header id="post-header">
+	<div class="inner">
+		<nav id="navigation">
+			<span id="home-button" class="nav-button">
+				<a class="home-button" href="https://deanhume.com/" title="Home"><i class="ic ic-arrow-left"></i> Home</a>
+			</span>
+			<span id="menu-button" class="nav-button">
+				<a class="menu-button"><i class="ic ic-menu"></i> Menu</a>
+			</span>
+		</nav>
+		<h1 class="post-title">Create a really, really simple offline page using Service Workers</h1>
+		<span class="post-meta"><time datetime="2016-01-25">25 Jan 2016</time></span>
+		
+	</div>
+</header>
+
+<main class="content" role="main">
+	<article class="post tag-service-workers">
+		<div class="inner">
+
+			<section class="post-content">
+				<p>Let's imagine for a second that you are on a train. The train is 
+cruising through the countryside and you are reading an awesome article 
+on the web using your mobile device. At the same moment that you click 
+on a link to view more details, the train suddenly disappears under a 
+tunnel. You've just lost connectivity and are presented with a web page 
+that looks a little something like this:</p>
+<p><script data-pagespeed-no-defer="">//<![CDATA[
+(function(){for(var g="function"==typeof Object.defineProperties?Object.defineProperty:function(b,c,a){if(a.get||a.set)throw new TypeError("ES3 does not support getters and setters.");b!=Array.prototype&&b!=Object.prototype&&(b[c]=a.value)},h="undefined"!=typeof window&&window===this?this:"undefined"!=typeof global&&null!=global?global:this,k=["String","prototype","repeat"],l=0;l<k.length-1;l++){var m=k[l];m in h||(h[m]={});h=h[m]}var n=k[k.length-1],p=h[n],q=p?p:function(b){var c;if(null==this)throw new TypeError("The 'this' value for String.prototype.repeat must not be null or undefined");c=this+"";if(0>b||1342177279<b)throw new RangeError("Invalid count value");b|=0;for(var a="";b;)if(b&1&&(a+=c),b>>>=1)c+=c;return a};q!=p&&null!=q&&g(h,n,{configurable:!0,writable:!0,value:q});var t=this;function u(b,c){var a=b.split("."),d=t;a[0]in d||!d.execScript||d.execScript("var "+a[0]);for(var e;a.length&&(e=a.shift());)a.length||void 0===c?d[e]?d=d[e]:d=d[e]={}:d[e]=c};function v(b){var c=b.length;if(0<c){for(var a=Array(c),d=0;d<c;d++)a[d]=b[d];return a}return[]};function w(b){var c=window;if(c.addEventListener)c.addEventListener("load",b,!1);else if(c.attachEvent)c.attachEvent("onload",b);else{var a=c.onload;c.onload=function(){b.call(this);a&&a.call(this)}}};var x;function y(b,c,a,d,e){this.h=b;this.j=c;this.l=a;this.f=e;this.g={height:window.innerHeight||document.documentElement.clientHeight||document.body.clientHeight,width:window.innerWidth||document.documentElement.clientWidth||document.body.clientWidth};this.i=d;this.b={};this.a=[];this.c={}}function z(b,c){var a,d,e=c.getAttribute("data-pagespeed-url-hash");if(a=e&&!(e in b.c))if(0>=c.offsetWidth&&0>=c.offsetHeight)a=!1;else{d=c.getBoundingClientRect();var f=document.body;a=d.top+("pageYOffset"in window?window.pageYOffset:(document.documentElement||f.parentNode||f).scrollTop);d=d.left+("pageXOffset"in window?window.pageXOffset:(document.documentElement||f.parentNode||f).scrollLeft);f=a.toString()+","+d;b.b.hasOwnProperty(f)?a=!1:(b.b[f]=!0,a=a<=b.g.height&&d<=b.g.width)}a&&(b.a.push(e),b.c[e]=!0)}y.prototype.checkImageForCriticality=function(b){b.getBoundingClientRect&&z(this,b)};u("pagespeed.CriticalImages.checkImageForCriticality",function(b){x.checkImageForCriticality(b)});u("pagespeed.CriticalImages.checkCriticalImages",function(){A(x)});function A(b){b.b={};for(var c=["IMG","INPUT"],a=[],d=0;d<c.length;++d)a=a.concat(v(document.getElementsByTagName(c[d])));if(a.length&&a[0].getBoundingClientRect){for(d=0;c=a[d];++d)z(b,c);a="oh="+b.l;b.f&&(a+="&n="+b.f);if(c=!!b.a.length)for(a+="&ci="+encodeURIComponent(b.a[0]),d=1;d<b.a.length;++d){var e=","+encodeURIComponent(b.a[d]);131072>=a.length+e.length&&(a+=e)}b.i&&(e="&rd="+encodeURIComponent(JSON.stringify(B())),131072>=a.length+e.length&&(a+=e),c=!0);C=a;if(c){d=b.h;b=b.j;var f;if(window.XMLHttpRequest)f=new XMLHttpRequest;else if(window.ActiveXObject)try{f=new ActiveXObject("Msxml2.XMLHTTP")}catch(r){try{f=new ActiveXObject("Microsoft.XMLHTTP")}catch(D){}}f&&(f.open("POST",d+(-1==d.indexOf("?")?"?":"&")+"url="+encodeURIComponent(b)),f.setRequestHeader("Content-Type","application/x-www-form-urlencoded"),f.send(a))}}}function B(){var b={},c;c=document.getElementsByTagName("IMG");if(!c.length)return{};var a=c[0];if(!("naturalWidth"in a&&"naturalHeight"in a))return{};for(var d=0;a=c[d];++d){var e=a.getAttribute("data-pagespeed-url-hash");e&&(!(e in b)&&0<a.width&&0<a.height&&0<a.naturalWidth&&0<a.naturalHeight||e in b&&a.width>=b[e].o&&a.height>=b[e].m)&&(b[e]={rw:a.width,rh:a.height,ow:a.naturalWidth,oh:a.naturalHeight})}return b}var C="";u("pagespeed.CriticalImages.getBeaconData",function(){return C});u("pagespeed.CriticalImages.Run",function(b,c,a,d,e,f){var r=new y(b,c,a,e,f);x=r;d&&w(function(){window.setTimeout(function(){A(r)},0)})});})();pagespeed.CriticalImages.Run('/mod_pagespeed_beacon','http://deanhume.com/create-a-really-really-simple-offline-page-using-service-workers/','8Xxa2XQLv9',true,false,'J8Uhk-DkGLk');
+//]]></script><img src="offline-page_files/no-connection.jpg" alt="No internet connection - Service Workers" data-pagespeed-url-hash="2520493804" onload="pagespeed.CriticalImages.checkImageForCriticality(this);"></p>
+<p>This can a pretty frustrating experience! Fortunately there are a few
+ things that we can do as web developers to improve the browsing 
+experience for our users. I've been playing around with Service Workers 
+quite a lot lately and am always surprised by the endless possibilities 
+that they bring to the web. One of the great features of Service Workers
+ is that they allow you to intercept network requests and decide how you
+ want to respond.</p>
+<p>In this article, I am going to use this feature to check if a user 
+has connectivity and respond with a really simple offline page if they 
+aren't connected. It's a really basic example, but it will give you an 
+idea how easy it is to get up and running! If you're not familiar with 
+Service Workers, I recommend checking out this <a href="https://github.com/slightlyoff/ServiceWorker">Github repo</a> for more info.</p>
+<p>Before we get started it might be worth simply explaining how the flow of this example will work:</p>
+<ol>
+<li>The first time a user visits our web page, we install the Service Worker and add our offline HTML page into the browsers cache</li>
+<li>Then, if a user tries to navigate to another web page, but isn't 
+connected to the internet, we can then return the cached offline HTML 
+page as a response instead</li>
+<li>But, if the user tries to navigate to another web page and has connectivity, we simply continue as normal</li>
+</ol>
+<h2 id="gettingstarted">Getting started</h2>
+<p>Imagine that you have the following HTML page. It's pretty basic, but it gives you the general idea.</p>
+<pre><code class="hljs xml"><span class="hljs-doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-title">html</span>&gt;</span>
+ <span class="hljs-tag">&lt;<span class="hljs-title">head</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-title">meta</span> <span class="hljs-attribute">charset</span>=<span class="hljs-value">"UTF-8"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-title">title</span>&gt;</span>Home Page<span class="hljs-tag">&lt;/<span class="hljs-title">title</span>&gt;</span>
+ <span class="hljs-tag">&lt;/<span class="hljs-title">head</span>&gt;</span>
+ <span class="hljs-tag">&lt;<span class="hljs-title">body</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-title">div</span> <span class="hljs-attribute">style</span>=<span class="hljs-value">"text-align:center; margin-top:40px;"</span>&gt;</span>
+     <span class="hljs-tag">&lt;<span class="hljs-title">img</span> <span class="hljs-attribute">src</span>=<span class="hljs-value">"./img/online.svg"</span> <span class="hljs-attribute">width</span>=<span class="hljs-value">"80"</span> <span class="hljs-attribute">height</span>=<span class="hljs-value">"80"</span> /&gt;</span>
+     <span class="hljs-tag">&lt;<span class="hljs-title">p</span>&gt;</span>Nice! You are currently online.<span class="hljs-tag">&lt;/<span class="hljs-title">p</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-title">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-title">body</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-title">html</span>&gt;</span>
+</code><div class="lines"><span class="line">1</span><span class="line">2</span><span class="line">3</span><span class="line">4</span><span class="line">5</span><span class="line">6</span><span class="line">7</span><span class="line">8</span><span class="line">9</span><span class="line">10</span><span class="line">11</span><span class="line">12</span><span class="line">13</span></div></pre>
+<p>Next, let's register our Service Worker in the page that we have just created. Add the following code to your HTML.</p>
+<script src="offline-page_files/ccf1bb609b03a4bcee19.js"></script><link rel="stylesheet" href="offline-page_files/gist-embed-4e8330898d16b1b65e7f0856076a5a28.css"><div id="gist27375720" class="gist">
+    <div class="gist-file">
+      <div class="gist-data">
+        <div class="js-gist-file-update-container js-task-list-container file-box">
+  <div id="file-service-worker-register-js" class="file">
+    
+
+  <div itemprop="text" class="Box-body p-0 blob-wrapper data type-javascript ">
+      
+<table class="highlight tab-size js-file-line-container" data-tab-size="8">
+      <tbody><tr>
+        <td id="file-service-worker-register-js-L1" class="blob-num js-line-number" data-line-number="1"></td>
+        <td id="file-service-worker-register-js-LC1" class="blob-code blob-code-inner js-file-line"><span class="pl-k">&lt;</span>script<span class="pl-k">&gt;</span></td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-register-js-L2" class="blob-num js-line-number" data-line-number="2"></td>
+        <td id="file-service-worker-register-js-LC2" class="blob-code blob-code-inner js-file-line"><span class="pl-c"><span class="pl-c">//</span> Register the service worker</span></td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-register-js-L3" class="blob-num js-line-number" data-line-number="3"></td>
+        <td id="file-service-worker-register-js-LC3" class="blob-code blob-code-inner js-file-line"><span class="pl-k">if</span> (<span class="pl-s"><span class="pl-pds">'</span>serviceWorker<span class="pl-pds">'</span></span> <span class="pl-k">in</span> <span class="pl-c1">navigator</span>) {</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-register-js-L4" class="blob-num js-line-number" data-line-number="4"></td>
+        <td id="file-service-worker-register-js-LC4" class="blob-code blob-code-inner js-file-line">	<span class="pl-c1">navigator</span>.<span class="pl-smi">serviceWorker</span>.<span class="pl-en">register</span>(<span class="pl-s"><span class="pl-pds">'</span>/service-worker.js<span class="pl-pds">'</span></span>).<span class="pl-c1">then</span>(<span class="pl-k">function</span>(<span class="pl-smi">registration</span>) {</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-register-js-L5" class="blob-num js-line-number" data-line-number="5"></td>
+        <td id="file-service-worker-register-js-LC5" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">//</span> Registration was successful</span></td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-register-js-L6" class="blob-num js-line-number" data-line-number="6"></td>
+        <td id="file-service-worker-register-js-LC6" class="blob-code blob-code-inner js-file-line">    <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>ServiceWorker registration successful with scope: <span class="pl-pds">'</span></span>, <span class="pl-smi">registration</span>.<span class="pl-c1">scope</span>);</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-register-js-L7" class="blob-num js-line-number" data-line-number="7"></td>
+        <td id="file-service-worker-register-js-LC7" class="blob-code blob-code-inner js-file-line">}).<span class="pl-c1">catch</span>(<span class="pl-k">function</span>(<span class="pl-smi">err</span>) {</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-register-js-L8" class="blob-num js-line-number" data-line-number="8"></td>
+        <td id="file-service-worker-register-js-LC8" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">//</span> registration failed :(</span></td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-register-js-L9" class="blob-num js-line-number" data-line-number="9"></td>
+        <td id="file-service-worker-register-js-LC9" class="blob-code blob-code-inner js-file-line">    	<span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>ServiceWorker registration failed: <span class="pl-pds">'</span></span>, err);</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-register-js-L10" class="blob-num js-line-number" data-line-number="10"></td>
+        <td id="file-service-worker-register-js-LC10" class="blob-code blob-code-inner js-file-line">    });</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-register-js-L11" class="blob-num js-line-number" data-line-number="11"></td>
+        <td id="file-service-worker-register-js-LC11" class="blob-code blob-code-inner js-file-line">}</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-register-js-L12" class="blob-num js-line-number" data-line-number="12"></td>
+        <td id="file-service-worker-register-js-LC12" class="blob-code blob-code-inner js-file-line"><span class="pl-k">&lt;</span><span class="pl-k">/</span>script<span class="pl-k">&gt;</span></td>
+      </tr>
+</tbody></table>
+
+
+  </div>
+
+  </div>
+</div>
+
+      </div>
+      <div class="gist-meta">
+        <a href="https://gist.github.com/deanhume/ccf1bb609b03a4bcee19/raw/fa1ab82ab487885dfeabe9883ae7993563a39f94/service-worker-register.js" style="float:right">view raw</a>
+        <a href="https://gist.github.com/deanhume/ccf1bb609b03a4bcee19#file-service-worker-register-js">service-worker-register.js</a>
+        hosted with ❤ by <a href="https://github.com/">GitHub</a>
+      </div>
+    </div>
+</div>
+
+<p>Next, we need to create the Service Worker file and call it 
+'service-worker.js'. We are going to use this Service Worker to 
+intercept any network requests, check for connectivity and respond with 
+the best content for the user.</p>
+<script src="offline-page_files/81960f702ceab4f90725.js"></script><link rel="stylesheet" href="offline-page_files/gist-embed-4e8330898d16b1b65e7f0856076a5a28.css"><div id="gist30264390" class="gist">
+    <div class="gist-file">
+      <div class="gist-data">
+        <div class="js-gist-file-update-container js-task-list-container file-box">
+  <div id="file-service-worker-add-offline-page-js" class="file">
+    
+
+  <div itemprop="text" class="Box-body p-0 blob-wrapper data type-javascript ">
+      
+<table class="highlight tab-size js-file-line-container" data-tab-size="8">
+      <tbody><tr>
+        <td id="file-service-worker-add-offline-page-js-L1" class="blob-num js-line-number" data-line-number="1"></td>
+        <td id="file-service-worker-add-offline-page-js-LC1" class="blob-code blob-code-inner js-file-line"><span class="pl-s"><span class="pl-pds">'</span>use strict<span class="pl-pds">'</span></span>;</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-add-offline-page-js-L2" class="blob-num js-line-number" data-line-number="2"></td>
+        <td id="file-service-worker-add-offline-page-js-LC2" class="blob-code blob-code-inner js-file-line">
+</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-add-offline-page-js-L3" class="blob-num js-line-number" data-line-number="3"></td>
+        <td id="file-service-worker-add-offline-page-js-LC3" class="blob-code blob-code-inner js-file-line"><span class="pl-k">var</span> cacheVersion <span class="pl-k">=</span> <span class="pl-c1">1</span>;</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-add-offline-page-js-L4" class="blob-num js-line-number" data-line-number="4"></td>
+        <td id="file-service-worker-add-offline-page-js-LC4" class="blob-code blob-code-inner js-file-line"><span class="pl-k">var</span> currentCache <span class="pl-k">=</span> {</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-add-offline-page-js-L5" class="blob-num js-line-number" data-line-number="5"></td>
+        <td id="file-service-worker-add-offline-page-js-LC5" class="blob-code blob-code-inner js-file-line">  offline<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>offline-cache<span class="pl-pds">'</span></span> <span class="pl-k">+</span> cacheVersion</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-add-offline-page-js-L6" class="blob-num js-line-number" data-line-number="6"></td>
+        <td id="file-service-worker-add-offline-page-js-LC6" class="blob-code blob-code-inner js-file-line">};</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-add-offline-page-js-L7" class="blob-num js-line-number" data-line-number="7"></td>
+        <td id="file-service-worker-add-offline-page-js-LC7" class="blob-code blob-code-inner js-file-line"><span class="pl-k">const</span> <span class="pl-c1">offlineUrl</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>offline-page.html<span class="pl-pds">'</span></span>;</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-add-offline-page-js-L8" class="blob-num js-line-number" data-line-number="8"></td>
+        <td id="file-service-worker-add-offline-page-js-LC8" class="blob-code blob-code-inner js-file-line">
+</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-add-offline-page-js-L9" class="blob-num js-line-number" data-line-number="9"></td>
+        <td id="file-service-worker-add-offline-page-js-LC9" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">this</span>.<span class="pl-c1">addEventListener</span>(<span class="pl-s"><span class="pl-pds">'</span>install<span class="pl-pds">'</span></span>, <span class="pl-smi">event</span> <span class="pl-k">=&gt;</span> {</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-add-offline-page-js-L10" class="blob-num js-line-number" data-line-number="10"></td>
+        <td id="file-service-worker-add-offline-page-js-LC10" class="blob-code blob-code-inner js-file-line">  <span class="pl-c1">event</span>.<span class="pl-en">waitUntil</span>(</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-add-offline-page-js-L11" class="blob-num js-line-number" data-line-number="11"></td>
+        <td id="file-service-worker-add-offline-page-js-LC11" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">caches</span>.<span class="pl-c1">open</span>(<span class="pl-smi">currentCache</span>.<span class="pl-smi">offline</span>).<span class="pl-c1">then</span>(<span class="pl-k">function</span>(<span class="pl-smi">cache</span>) {</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-add-offline-page-js-L12" class="blob-num js-line-number" data-line-number="12"></td>
+        <td id="file-service-worker-add-offline-page-js-LC12" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">return</span> <span class="pl-smi">cache</span>.<span class="pl-en">addAll</span>([</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-add-offline-page-js-L13" class="blob-num js-line-number" data-line-number="13"></td>
+        <td id="file-service-worker-add-offline-page-js-LC13" class="blob-code blob-code-inner js-file-line">          <span class="pl-s"><span class="pl-pds">'</span>./img/offline.svg<span class="pl-pds">'</span></span>,</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-add-offline-page-js-L14" class="blob-num js-line-number" data-line-number="14"></td>
+        <td id="file-service-worker-add-offline-page-js-LC14" class="blob-code blob-code-inner js-file-line">          offlineUrl</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-add-offline-page-js-L15" class="blob-num js-line-number" data-line-number="15"></td>
+        <td id="file-service-worker-add-offline-page-js-LC15" class="blob-code blob-code-inner js-file-line">      ]);</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-add-offline-page-js-L16" class="blob-num js-line-number" data-line-number="16"></td>
+        <td id="file-service-worker-add-offline-page-js-LC16" class="blob-code blob-code-inner js-file-line">    })</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-add-offline-page-js-L17" class="blob-num js-line-number" data-line-number="17"></td>
+        <td id="file-service-worker-add-offline-page-js-LC17" class="blob-code blob-code-inner js-file-line">  );</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-add-offline-page-js-L18" class="blob-num js-line-number" data-line-number="18"></td>
+        <td id="file-service-worker-add-offline-page-js-LC18" class="blob-code blob-code-inner js-file-line">});</td>
+      </tr>
+</tbody></table>
+
+
+  </div>
+
+  </div>
+</div>
+
+      </div>
+      <div class="gist-meta">
+        <a href="https://gist.github.com/deanhume/81960f702ceab4f90725/raw/07332e091a96fad592ddfdae3271d8f69ae7977c/service-worker-add-offline-page.js" style="float:right">view raw</a>
+        <a href="https://gist.github.com/deanhume/81960f702ceab4f90725#file-service-worker-add-offline-page-js">service-worker-add-offline-page.js</a>
+        hosted with ❤ by <a href="https://github.com/">GitHub</a>
+      </div>
+    </div>
+</div>
+
+<p>In the code above, we are adding our offline page into the cache when
+ we install the Service Worker. If we break the code down a little, you 
+can see in the first few lines I am specifying the cache version and the
+ URL for the offline page. If you had different versions of your cache, 
+you would simply bust the cache by updating this version number. Around 
+line 12, I am making a request for this offline page and it's resources 
+and when I have a successful response, it gets added to the cache.</p>
+<p>Now that the offline page is stored in cache, we can retrieve it 
+whenever we need to. In the same Service Worker, we need to add the 
+logic to return the offline page if we have no connectivity.</p>
+<script src="offline-page_files/5198f12946c29362a3ec.js"></script><link rel="stylesheet" href="offline-page_files/gist-embed-4e8330898d16b1b65e7f0856076a5a28.css"><div id="gist30265024" class="gist">
+    <div class="gist-file">
+      <div class="gist-data">
+        <div class="js-gist-file-update-container js-task-list-container file-box">
+  <div id="file-service-worker-offline-page-js" class="file">
+    
+
+  <div itemprop="text" class="Box-body p-0 blob-wrapper data type-javascript ">
+      
+<table class="highlight tab-size js-file-line-container" data-tab-size="8">
+      <tbody><tr>
+        <td id="file-service-worker-offline-page-js-L1" class="blob-num js-line-number" data-line-number="1"></td>
+        <td id="file-service-worker-offline-page-js-LC1" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">this</span>.<span class="pl-c1">addEventListener</span>(<span class="pl-s"><span class="pl-pds">'</span>fetch<span class="pl-pds">'</span></span>, <span class="pl-smi">event</span> <span class="pl-k">=&gt;</span> {</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-offline-page-js-L2" class="blob-num js-line-number" data-line-number="2"></td>
+        <td id="file-service-worker-offline-page-js-LC2" class="blob-code blob-code-inner js-file-line">  <span class="pl-c"><span class="pl-c">//</span> request.mode = navigate isn't supported in all browsers</span></td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-offline-page-js-L3" class="blob-num js-line-number" data-line-number="3"></td>
+        <td id="file-service-worker-offline-page-js-LC3" class="blob-code blob-code-inner js-file-line">  <span class="pl-c"><span class="pl-c">//</span> so include a check for Accept: text/html header.</span></td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-offline-page-js-L4" class="blob-num js-line-number" data-line-number="4"></td>
+        <td id="file-service-worker-offline-page-js-LC4" class="blob-code blob-code-inner js-file-line">  <span class="pl-k">if</span> (<span class="pl-c1">event</span>.<span class="pl-smi">request</span>.<span class="pl-smi">mode</span> <span class="pl-k">===</span> <span class="pl-s"><span class="pl-pds">'</span>navigate<span class="pl-pds">'</span></span> <span class="pl-k">||</span> (<span class="pl-c1">event</span>.<span class="pl-smi">request</span>.<span class="pl-c1">method</span> <span class="pl-k">===</span> <span class="pl-s"><span class="pl-pds">'</span>GET<span class="pl-pds">'</span></span> <span class="pl-k">&amp;&amp;</span> <span class="pl-c1">event</span>.<span class="pl-smi">request</span>.<span class="pl-c1">headers</span>.<span class="pl-c1">get</span>(<span class="pl-s"><span class="pl-pds">'</span>accept<span class="pl-pds">'</span></span>).<span class="pl-en">includes</span>(<span class="pl-s"><span class="pl-pds">'</span>text/html<span class="pl-pds">'</span></span>))) {</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-offline-page-js-L5" class="blob-num js-line-number" data-line-number="5"></td>
+        <td id="file-service-worker-offline-page-js-LC5" class="blob-code blob-code-inner js-file-line">        <span class="pl-c1">event</span>.<span class="pl-en">respondWith</span>(</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-offline-page-js-L6" class="blob-num js-line-number" data-line-number="6"></td>
+        <td id="file-service-worker-offline-page-js-LC6" class="blob-code blob-code-inner js-file-line">          <span class="pl-en">fetch</span>(<span class="pl-c1">event</span>.<span class="pl-smi">request</span>.<span class="pl-smi">url</span>).<span class="pl-c1">catch</span>(<span class="pl-smi">error</span> <span class="pl-k">=&gt;</span> {</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-offline-page-js-L7" class="blob-num js-line-number" data-line-number="7"></td>
+        <td id="file-service-worker-offline-page-js-LC7" class="blob-code blob-code-inner js-file-line">              <span class="pl-c"><span class="pl-c">//</span> Return the offline page</span></td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-offline-page-js-L8" class="blob-num js-line-number" data-line-number="8"></td>
+        <td id="file-service-worker-offline-page-js-LC8" class="blob-code blob-code-inner js-file-line">              <span class="pl-k">return</span> <span class="pl-smi">caches</span>.<span class="pl-c1">match</span>(offlineUrl);</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-offline-page-js-L9" class="blob-num js-line-number" data-line-number="9"></td>
+        <td id="file-service-worker-offline-page-js-LC9" class="blob-code blob-code-inner js-file-line">          })</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-offline-page-js-L10" class="blob-num js-line-number" data-line-number="10"></td>
+        <td id="file-service-worker-offline-page-js-LC10" class="blob-code blob-code-inner js-file-line">    );</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-offline-page-js-L11" class="blob-num js-line-number" data-line-number="11"></td>
+        <td id="file-service-worker-offline-page-js-LC11" class="blob-code blob-code-inner js-file-line">  }</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-offline-page-js-L12" class="blob-num js-line-number" data-line-number="12"></td>
+        <td id="file-service-worker-offline-page-js-LC12" class="blob-code blob-code-inner js-file-line">  <span class="pl-k">else</span>{</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-offline-page-js-L13" class="blob-num js-line-number" data-line-number="13"></td>
+        <td id="file-service-worker-offline-page-js-LC13" class="blob-code blob-code-inner js-file-line">        <span class="pl-c"><span class="pl-c">//</span> Respond with everything else if we can</span></td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-offline-page-js-L14" class="blob-num js-line-number" data-line-number="14"></td>
+        <td id="file-service-worker-offline-page-js-LC14" class="blob-code blob-code-inner js-file-line">        <span class="pl-c1">event</span>.<span class="pl-en">respondWith</span>(<span class="pl-smi">caches</span>.<span class="pl-c1">match</span>(<span class="pl-c1">event</span>.<span class="pl-smi">request</span>)</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-offline-page-js-L15" class="blob-num js-line-number" data-line-number="15"></td>
+        <td id="file-service-worker-offline-page-js-LC15" class="blob-code blob-code-inner js-file-line">                        .<span class="pl-c1">then</span>(<span class="pl-k">function</span> (<span class="pl-smi">response</span>) {</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-offline-page-js-L16" class="blob-num js-line-number" data-line-number="16"></td>
+        <td id="file-service-worker-offline-page-js-LC16" class="blob-code blob-code-inner js-file-line">                        <span class="pl-k">return</span> response <span class="pl-k">||</span> <span class="pl-en">fetch</span>(<span class="pl-c1">event</span>.<span class="pl-smi">request</span>);</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-offline-page-js-L17" class="blob-num js-line-number" data-line-number="17"></td>
+        <td id="file-service-worker-offline-page-js-LC17" class="blob-code blob-code-inner js-file-line">                    })</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-offline-page-js-L18" class="blob-num js-line-number" data-line-number="18"></td>
+        <td id="file-service-worker-offline-page-js-LC18" class="blob-code blob-code-inner js-file-line">            );</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-offline-page-js-L19" class="blob-num js-line-number" data-line-number="19"></td>
+        <td id="file-service-worker-offline-page-js-LC19" class="blob-code blob-code-inner js-file-line">      }</td>
+      </tr>
+      <tr>
+        <td id="file-service-worker-offline-page-js-L20" class="blob-num js-line-number" data-line-number="20"></td>
+        <td id="file-service-worker-offline-page-js-LC20" class="blob-code blob-code-inner js-file-line">});</td>
+      </tr>
+</tbody></table>
+
+
+  </div>
+
+  </div>
+</div>
+
+      </div>
+      <div class="gist-meta">
+        <a href="https://gist.github.com/deanhume/5198f12946c29362a3ec/raw/f2276c342522e8bcaac197798d8a2ec98f55ff8c/service-worker-offline-page.js" style="float:right">view raw</a>
+        <a href="https://gist.github.com/deanhume/5198f12946c29362a3ec#file-service-worker-offline-page-js">service-worker-offline-page.js</a>
+        hosted with ❤ by <a href="https://github.com/">GitHub</a>
+      </div>
+    </div>
+</div>
+
+<p>In the code above we are listening out for the fetch event, and if we
+ detect that the user is trying to navigate to another page and if there
+ is an error whilst doing so, we simply return the offline page from 
+cache. Easy!</p>
+<p>In order to test this functionality, you can use the built-in 
+Developer Tools in Chrome. Start by navigating to your web page, and 
+once the Service Worker has installed head over to the Network tab and 
+change the throttling to <strong><em>Offline</em></strong>.</p>
+<p><img src="offline-page_files/offline-network-throttling.jpg" alt="Offline Page - Developer Tools" data-pagespeed-url-hash="546257244" onload="pagespeed.CriticalImages.checkImageForCriticality(this);"></p>
+<p>If you refresh the page, you should see your offline page!</p>
+<p><img src="offline-page_files/custom-offline-page.jpg" alt="Custom Offline Page - Service Workers" data-pagespeed-url-hash="2004712815" onload="pagespeed.CriticalImages.checkImageForCriticality(this);"></p>
+<p>If you simply want to test this functionality without writing any code, I've created a <a href="https://deanhume.github.io/Service-Worker-Offline/">demo page on Github</a> that you can experiment with. All of the code for this example is also available on the <a href="https://github.com/deanhume/Service-Worker-Offline">Github repo</a>.</p>
+<p>I understand that the page used in this example is really simple, but
+ what you decide to add to yours is up to you! If you wanted to take 
+this example further, you could include cache busting for the offline 
+page as shown in <a href="https://github.com/GoogleChrome/samples/tree/gh-pages/service-worker/custom-offline-page">this example</a>.</p>
+<h2 id="furtherreading">Further reading</h2>
+<p>There are some great examples of offline functionality out there in 
+the wild. For example, The Guardian built an offline web page that has a
+ <a href="https://www.theguardian.com/info/developer-blog/2015/nov/04/building-an-offline-page-for-theguardiancom">crossword puzzle</a> - so if you are offline at least you can have a little fun while waiting to reconnect. I also recommend taking a look at the <a href="https://github.com/GoogleChrome/samples/tree/gh-pages/service-worker">Google Chrome Github repo</a> that contains a load of different Service Worker samples - there are some great use cases in there!</p>
+<p>However, if you prefer to skip the code above and simply let a library handle this all for you, I recommend checking out <a href="https://www.talater.com/upup/">UpUp</a>. It's a tiny script that gives you out-of-the-box offline functionality.</p>
+
+			</section>
+
+			<section class="post-info">
+
+				<aside class="post-tags">
+					<a href="https://deanhume.com/tag/service-workers/">Service Workers</a>
+				</aside>
+
+				<div class="clear"></div>
+			</section>
+
+			<aside class="post-nav">
+					<a class="post-nav-next" href="https://deanhume.com/whats-your-favourite-algorithm/">
+						<section class="post-nav-teaser">
+							<i class="ic ic-arrow-left"></i>
+							<h2 class="post-nav-title">Whats your Favourite Algorithm?</h2>
+							<p class="post-nav-excerpt">Whether you've studied a computer science related subject or not, complex algorithms…</p>
+						</section>
+					</a>
+					<a class="post-nav-prev" href="https://deanhume.com/getting-started-with-the-service-worker-toolbox/">
+						<section class="post-nav-teaser">
+							<i class="ic ic-arrow-right"></i>
+							<h2 class="post-nav-title">Getting started with the Service Worker Toolbox</h2>
+							<p class="post-nav-excerpt">I've been playing around with Service Workers a lot lately. I am…</p>
+						</section>
+					</a>
+				<div class="clear"></div>
+			</aside>
+
+
+		</div>
+	</article>
+</main>
+
+
+		<div id="body-class" style="display: none;" class="post-template tag-service-workers"></div>
+
+	</section>
+
+	<script type="text/javascript" src="offline-page_files/script.js"></script> <script>function getServiceWorkerStatus(){if('serviceWorker'in navigator){return navigator.serviceWorker.controller?'controlled':'supported';}else{return'unsupported';}}gtag('event','service-worker-support',{'event_category':'service-worker-support','event_label':getServiceWorkerStatus()});if('serviceWorker'in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('/sw-8.js');});}</script>
+
+
+
+</body></html>
